@@ -1,0 +1,60 @@
+# Success Criteria for EXP-001: Sök-GUI
+
+criteria:
+  # === Prototyp (kan testas isolerat) ===
+  - id: GUI_RENDERS
+    description: "Webbsidan renderar på http://localhost:8000"
+    test: "Manuell verifiering - sidan laddas utan fel"
+    phase: prototype
+
+  - id: SEARCH_FIELD
+    description: "Sökfält accepterar text och skickar sökning"
+    test: "Skriv 'Kvalitet' och klicka Sök"
+    phase: prototype
+
+  - id: HYBRID_RESULTS
+    description: "Fri sökning returnerar resultat med källa och score"
+    test: "POST /api/search med query returnerar JSON"
+    phase: prototype
+
+  - id: CATEGORY_RESULTS
+    description: "Kategorisökning returnerar resultat med relevans och motivering"
+    test: "POST /api/kategori med category returnerar JSON"
+    phase: prototype
+
+  - id: RESULT_DISPLAY
+    description: "Resultat visas med filnamn, score/relevans och textutdrag"
+    test: "Manuell verifiering"
+    phase: prototype
+
+  # === Integration ===
+  - id: USES_EXISTING_ENGINE
+    description: "Använder rag_engine.HybridIndex utan duplicering"
+    test: "Koden importerar från rag_engine, ingen kopierad logik"
+    phase: integration
+
+  - id: USES_EXISTING_INDEX
+    description: "Läser befintligt .index/ — kräver ej omindexering"
+    test: "Starta GUI utan att köra index först"
+    phase: integration
+
+  # === Edge cases ===
+  - id: NO_INDEX
+    description: "Inget index → tydligt felmeddelande"
+    expected: "Visa meddelande att index saknas"
+    phase: edge_case
+
+  - id: EMPTY_QUERY
+    description: "Tom sökning → ingen krasch"
+    expected: "Visa meddelande eller ignorera"
+    phase: edge_case
+
+  - id: NO_API_KEY
+    description: "Kategorisökning utan ANTHROPIC_API_KEY → tydligt fel"
+    expected: "Visa felmeddelande, inte krasch"
+    phase: edge_case
+
+success_threshold:
+  prototype: 5/5
+  integration: 2/2
+  edge_cases: 2/3

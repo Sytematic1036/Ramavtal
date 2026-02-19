@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ramavtal Dokumentsokning</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .status-bar {
+            background: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .status-bar.no-index {
+            background: #fff3e0;
+            border-color: #ffe0b2;
+        }
+
+        /* Sokformular */
+        .search-box {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-row input[type="text"] {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-row input[type="text"]:focus {
+            border-color: #1976d2;
+        }
+
+        .search-row button {
+            padding: 0.75rem 1.5rem;
+            background: #1976d2;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .search-row button:hover { background: #1565c0; }
+        .search-row button:disabled { background: #bbb; cursor: not-allowed; }
+
+        .mode-toggle {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .mode-toggle label {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .mode-toggle input[type="radio"] {
+            accent-color: #1976d2;
+        }
+
+        .mode-info {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 0.5rem;
+        }
+
+        /* Resultat */
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .results-header h2 {
+            font-size: 1.2rem;
+        }
+
+        .results-count {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .result-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            padding: 1.25rem;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid #1976d2;
+            transition: box-shadow 0.2s;
+        }
+
+        .result-card:hover {
+            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+        }
+
+        .result-card.category {
+            border-left-color: #7b1fa2;
+        }
+
+        .result-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-source {
+            font-weight: 600;
+            color: #1976d2;
+        }
+
+        .result-card.category .result-source {
+            color: #7b1fa2;
+        }
+
+        .result-score {
+            background: #e3f2fd;
+            color: #1565c0;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .result-card.category .result-score {
+            background: #f3e5f5;
+            color: #6a1b9a;
+        }
+
+        .result-text {
+            color: #555;
+            font-size: 0.92rem;
+            line-height: 1.5;
+        }
+
+        .result-motivering {
+            margin-top: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            background: #fafafa;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        /* Loading & Error */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #888;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid #e0e0e0;
+            border-top-color: #1976d2;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .error-msg {
+            background: #ffebee;
+            border: 1px solid #ffcdd2;
+            color: #c62828;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ramavtal Dokumentsokning</h1>
+        <p class="subtitle">Semantisk sokning i upphandlingsdokument</p>
+
+        {% if has_index %}
+        <div class="status-bar">
+            Index laddat: {{ doc_count }} dokument, {{ chunk_count }} chunks
+        </div>
+        {% else %}
+        <div class="status-bar no-index">
+            Inget index hittat. Kor <code>python search.py index</code> forst.
+        </div>
+        {% endif %}
+
+        <div class="search-box">
+            <div class="search-row">
+                <input type="text" id="query" placeholder="Sok i dokument..." autofocus>
+                <button id="searchBtn" onclick="doSearch()">Sok</button>
+            </div>
+            <div class="mode-toggle">
+                <label>
+                    <input type="radio" name="mode" value="search" checked>
+                    Fri sokning
+                </label>
+                <label>
+                    <input type="radio" name="mode" value="kategori">
+                    Kategorisokning (Claude)
+                </label>
+            </div>
+            <div class="mode-info" id="modeInfo">
+                Hybrid BM25 + semantisk sokning med Reciprocal Rank Fusion.
+            </div>
+        </div>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const queryInput = document.getElementById('query');
+        const searchBtn = document.getElementById('searchBtn');
+        const resultsDiv = document.getElementById('results');
+        const modeInfo = document.getElementById('modeInfo');
+
+        // Uppdatera info-text vid mode-byte
+        document.querySelectorAll('input[name="mode"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                const mode = document.querySelector('input[name="mode"]:checked').value;
+                if (mode === 'search') {
+                    modeInfo.textContent = 'Hybrid BM25 + semantisk sokning med Reciprocal Rank Fusion.';
+                } else {
+                    modeInfo.textContent = 'Claude klassificerar resultat efter kategori-relevans (kraver API-nyckel).';
+                }
+            });
+        });
+
+        // Enter-tangent
+        queryInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') doSearch();
+        });
+
+        async function doSearch() {
+            const query = queryInput.value.trim();
+            if (!query) return;
+
+            const mode = document.querySelector('input[name="mode"]:checked').value;
+            const isCategory = mode === 'kategori';
+
+            // Loading state
+            searchBtn.disabled = true;
+            const loadingText = isCategory ? 'Soker med Claude...' : 'Soker...';
+            resultsDiv.innerHTML = `<div class="loading"><span class="spinner"></span>${loadingText}</div>`;
+
+            try {
+                const url = isCategory ? '/api/kategori' : '/api/search';
+                const body = isCategory ? { category: query } : { query: query, top_k: 10 };
+
+                const resp = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body),
+                });
+
+                const data = await resp.json();
+
+                if (data.error) {
+                    resultsDiv.innerHTML = `<div class="error-msg">${data.error}</div>`;
+                    return;
+                }
+
+                if (!data.results || data.results.length === 0) {
+                    resultsDiv.innerHTML = '<div class="empty-state">Inga resultat hittades.</div>';
+                    return;
+                }
+
+                renderResults(data.results, isCategory, query);
+            } catch (err) {
+                resultsDiv.innerHTML = `<div class="error-msg">Fel: ${err.message}</div>`;
+            } finally {
+                searchBtn.disabled = false;
+            }
+        }
+
+        function renderResults(results, isCategory, query) {
+            const label = isCategory ? 'Kategorisokning' : 'Fri sokning';
+            let html = `
+                <div class="results-header">
+                    <h2>${label}: "${query}"</h2>
+                    <span class="results-count">${results.length} resultat</span>
+                </div>
+            `;
+
+            results.forEach((r, i) => {
+                const cardClass = isCategory ? 'result-card category' : 'result-card';
+                const scoreLabel = isCategory
+                    ? `Relevans: ${r.relevance}/10`
+                    : `Score: ${r.score}`;
+                const text = r.text.length > 500 ? r.text.substring(0, 500) + '...' : r.text;
+
+                html += `
+                    <div class="${cardClass}">
+                        <div class="result-meta">
+                            <span class="result-source">${r.filename} (chunk ${r.chunk_idx})</span>
+                            <span class="result-score">${scoreLabel}</span>
+                        </div>
+                        <div class="result-text">${escapeHtml(text)}</div>
+                `;
+
+                if (isCategory && r.motivering) {
+                    html += `<div class="result-motivering">${escapeHtml(r.motivering)}</div>`;
+                }
+
+                html += '</div>';
+            });
+
+            resultsDiv.innerHTML = html;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
