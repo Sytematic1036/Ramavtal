@@ -8,6 +8,7 @@ Centralt experiment-system. Alla experiment sparas här och hänvisar till sitt 
 |----|------|-------------|--------|-------------|
 | [EXP-001](./EXP-001_search-gui/) | Sök-GUI | Ramavtal | EXPERIMENTAL | - |
 | [EXP-002](./EXP-002_heading-search/) | Rubrik-medveten sökning | Ramavtal | EXPERIMENTAL | - |
+| [EXP-003](./EXP-003_prompt-search/) | Prompt-driven sökning | Ramavtal | EXPERIMENTAL | EXP-002 |
 
 ## Flöde
 

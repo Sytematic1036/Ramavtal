@@ -1,0 +1,3 @@
+# Kräver anthropic SDK (redan i projektets requirements.txt)
+# PyYAML för att ladda prompt-definitioner
+pyyaml

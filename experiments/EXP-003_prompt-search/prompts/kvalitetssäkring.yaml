@@ -1,0 +1,20 @@
+name: Kvalitetssäkring
+description: Hitta stycken om kvalitetssäkring, kvalitetskontroll och kvalitetsuppföljning
+
+retrieval: hybrid
+threshold: 5
+top_k_retrieval: 20
+top_k_results: 10
+
+prompt: |
+  Bedöm om passagen beskriver kvalitetssäkringsåtgärder i ett bygg- eller
+  entreprenadprojekt. Inkludera:
+  - Kvalitetskontroller och checklistor
+  - Rutiner för egenkontroll
+  - Kvalitetsplaner och kvalitetssystem
+  - Uppföljning av kvalitetsmål
+  - Avvikelsehantering och åtgärdsplaner
+  - Dokumentation av kvalitetsarbete
+  - Certifieringar (ISO 9001 etc.)
+  Passager som bara nämner "kvalitet" i förbigående utan konkreta åtgärder
+  ska få lägre poäng (2-4).

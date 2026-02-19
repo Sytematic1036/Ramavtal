@@ -1,0 +1,55 @@
+# Success Criteria for EXP-003: Prompt-driven Search
+
+criteria:
+  # === Prototyp ===
+  - id: YAML_LOADING
+    description: "Prompt-definitioner laddas från YAML-filer"
+    test: "load_prompt('kvalitetssäkring') returnerar dict med name, prompt, retrieval"
+    phase: prototype
+
+  - id: RETRIEVAL_INTEGRATION
+    description: "Retrieval-steget använder EXP-002 strategy registry"
+    test: "Prompt med retrieval='heading' anropar strategy_heading"
+    phase: prototype
+
+  - id: CLAUDE_EVALUATION
+    description: "Claude utvärderar kandidater mot prompten (0-10 + motivering)"
+    test: "Resultat innehåller relevance och motivering"
+    phase: prototype
+
+  - id: THRESHOLD_FILTER
+    description: "Resultat under threshold filtreras bort"
+    test: "Prompt med threshold=5 returnerar inga resultat med score < 5"
+    phase: prototype
+
+  - id: LIST_PROMPTS
+    description: "Alla tillgängliga prompts kan listas"
+    test: "list_prompts() returnerar minst 3 prompts"
+    phase: prototype
+
+  # === Integration ===
+  - id: USES_EXP002_STRATEGIES
+    description: "Importerar search_strategies från EXP-002"
+    test: "Kodgranskning — ingen duplicerad strategi-logik"
+    phase: integration
+
+  - id: GENERALIZES_CLASSIFIER
+    description: "Ersätter category_classifier.py-mönstret generiskt"
+    test: "category_classifier-logiken kan uttryckas som en YAML-prompt"
+    phase: integration
+
+  # === Edge cases ===
+  - id: MISSING_PROMPT
+    description: "Referens till icke-existerande prompt → tydligt fel"
+    expected: "Felmeddelande med lista på tillgängliga prompts"
+    phase: edge_case
+
+  - id: NO_API_KEY
+    description: "Saknad ANTHROPIC_API_KEY → tydligt felmeddelande"
+    expected: "Informativt meddelande, ingen krasch"
+    phase: edge_case
+
+success_threshold:
+  prototype: 5/5
+  integration: 2/2
+  edge_cases: 1/2

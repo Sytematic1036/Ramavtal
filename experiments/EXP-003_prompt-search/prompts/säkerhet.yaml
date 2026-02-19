@@ -1,0 +1,21 @@
+name: Arbetsmiljö och säkerhet
+description: Hitta stycken om arbetsmiljö, säkerhet och skyddsåtgärder
+
+retrieval: hybrid
+threshold: 5
+top_k_retrieval: 20
+top_k_results: 10
+
+prompt: |
+  Bedöm om passagen beskriver arbetsmiljö- eller säkerhetsrelaterade krav
+  och rutiner. Inkludera:
+  - Arbetsmiljöplaner och riskbedömningar
+  - Skyddsronder och säkerhetsinspektioner
+  - Personlig skyddsutrustning
+  - Säkerhetskultur och säkerhetsutbildning
+  - Tillträdesbegränsningar och behörigheter
+  - Olyckshantering och incidentrapportering
+  - Brandskydd och utrymning
+  - Samordningsansvar och byggarbetsmiljösamordnare (BAS-P/BAS-U)
+  Passager som nämner "säkerhet" enbart i IT/informationssäkerhetskontext
+  ska bedömas separat — ge 3-4 om det är IT-säkerhet, 7-10 om fysisk säkerhet.
