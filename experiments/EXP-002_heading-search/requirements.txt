@@ -1,0 +1,2 @@
+# Samma som projektets requirements.txt — inga nya dependencies
+# structured_loader använder pdfplumber och python-docx som redan finns

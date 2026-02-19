@@ -7,6 +7,7 @@ Centralt experiment-system. Alla experiment sparas här och hänvisar till sitt 
 | ID | Namn | Target Repo | Status | Bygger från |
 |----|------|-------------|--------|-------------|
 | [EXP-001](./EXP-001_search-gui/) | Sök-GUI | Ramavtal | EXPERIMENTAL | - |
+| [EXP-002](./EXP-002_heading-search/) | Rubrik-medveten sökning | Ramavtal | EXPERIMENTAL | - |
 
 ## Flöde
 

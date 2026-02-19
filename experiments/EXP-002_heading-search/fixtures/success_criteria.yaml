@@ -1,0 +1,55 @@
+# Success Criteria for EXP-002: Heading Search
+
+criteria:
+  # === Prototyp ===
+  - id: DOCX_HEADINGS
+    description: "DOCX-filer parsas med heading-metadata bevarad"
+    test: "load_docx_structured() returnerar element med heading-fält"
+    phase: prototype
+
+  - id: PDF_HEADINGS
+    description: "PDF-filer parsas med heuristisk heading-detection"
+    test: "load_pdf_structured() returnerar element med heading-fält"
+    phase: prototype
+
+  - id: ENRICHED_CHUNKS
+    description: "Chunks i index har heading, section_path, element_type"
+    test: "Inspektera chunks.json efter omindexering"
+    phase: prototype
+
+  - id: STRATEGY_REGISTRY
+    description: "Strategier registreras med @register_strategy decorator"
+    test: "list_strategies() returnerar minst 3 strategier"
+    phase: prototype
+
+  - id: HEADING_SEARCH
+    description: "heading-strategi hittar stycken under matchande rubrik"
+    test: "strategy('heading', 'Kvalitet', index) returnerar relevanta chunks"
+    phase: prototype
+
+  # === Integration ===
+  - id: BACKWARD_COMPATIBLE
+    description: "Befintlig hybrid-sökning fungerar som innan"
+    test: "search.py search 'timpris' ger samma resultat"
+    phase: integration
+
+  - id: REUSES_ENGINE
+    description: "Importerar från rag_engine, duplicerar ej logik"
+    test: "Kodgranskning"
+    phase: integration
+
+  # === Edge cases ===
+  - id: NO_HEADINGS
+    description: "Dokument utan rubriker → chunks får heading=''"
+    expected: "Ingen krasch, fallback till tom heading"
+    phase: edge_case
+
+  - id: MIXED_FORMATS
+    description: "Mix av PDF och DOCX i samma index"
+    expected: "Alla filer får heading-metadata"
+    phase: edge_case
+
+success_threshold:
+  prototype: 5/5
+  integration: 2/2
+  edge_cases: 1/2
